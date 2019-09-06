@@ -40,8 +40,7 @@ public class CommentController {
 	 * @param productId
 	 * @return
 	 */
-	@PostMapping(path = "/products/{productId}/comments", consumes = { "application/json",
-			"application/xml" }, produces = { "application/json", "application/xml" })
+	@PostMapping(path = "/products/{productId}/comments")
 	public ResponseEntity<Comment> postComment(@RequestBody Comment comment, @PathVariable String productId) {
 		Set<String> abusiveWords = commentValidationService.validateAbusiveWords(comment);
 		HttpStatus status = HttpStatus.OK;
@@ -59,7 +58,7 @@ public class CommentController {
 	 * @param productId
 	 * @return
 	 */
-	@GetMapping(path = "/products/{productId}/comments", produces = { "application/json", "application/xml" })
+	@GetMapping(path = "/products/{productId}/comments")
 	public ResponseEntity<List<Comment>> getAllComment(@PathVariable String productId) {
 		List<Comment> comment = commentRepository.getCommentByProduct(productId);
 		HttpStatus status = HttpStatus.OK;
