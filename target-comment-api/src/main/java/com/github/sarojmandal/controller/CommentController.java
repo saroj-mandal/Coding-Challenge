@@ -43,13 +43,12 @@ public class CommentController {
 	@PostMapping(path = "/products/{productId}/comments")
 	public ResponseEntity<Comment> postComment(@RequestBody Comment comment, @PathVariable String productId) {
 		Set<String> abusiveWords = commentValidationService.validateAbusiveWords(comment);
-		HttpStatus status = HttpStatus.OK;
 		if (!abusiveWords.isEmpty()) {
 			throw new InvalidRequestException(
 					MessageFormat.format("Comment contains objectionable words like {0}", abusiveWords.toString()));
 		}
 		Comment createdComment = commentRepository.addComment(productId, comment);
-		return new ResponseEntity<>(createdComment, status);
+		return new ResponseEntity<>(createdComment, HttpStatus.OK);
 	}
 
 	/**
@@ -61,11 +60,11 @@ public class CommentController {
 	@GetMapping(path = "/products/{productId}/comments")
 	public ResponseEntity<List<Comment>> getAllComment(@PathVariable String productId) {
 		List<Comment> comment = commentRepository.getCommentByProduct(productId);
-		HttpStatus status = HttpStatus.OK;
 		if (null == comment || comment.isEmpty()) {
-			status = HttpStatus.NOT_FOUND;
+			throw new InvalidRequestException(
+					MessageFormat.format("There is no comment available for product id : {0}", productId));
 		}
-		return new ResponseEntity<>(comment, status);
+		return new ResponseEntity<>(comment, HttpStatus.OK);
 	}
 
 }
